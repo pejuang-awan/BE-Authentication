@@ -5,6 +5,7 @@ import "errors"
 const (
 	CreateUserSuccess = "User created successfully"
 	LoginSuccess      = "Login success"
+	Unauthorized      = "Unauthorized"
 )
 
 var (

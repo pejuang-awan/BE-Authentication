@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4/middleware"
+	customMiddleware "github.com/pejuang-awan/BE-Authentication/internal/middleware"
 	"github.com/pejuang-awan/BE-Authentication/internal/shared"
 	"go.uber.org/dig"
 	"unicode"
@@ -10,7 +11,9 @@ import (
 )
 
 const (
-	PrefixAuthAPI = "/api/auth"
+	PrefixAuthAPI            = "/api/auth"
+	PrefixTourneyMakerAPI    = "/api/tourney-maker"
+	PrefixTourneyRegistryAPI = "/api/tourney-registry"
 
 	SignUpAPI = "/sign-up"
 	SignInAPI = "/sign-in"
@@ -22,8 +25,10 @@ type CustomValidator struct {
 
 type Holder struct {
 	dig.In
-	Deps shared.Deps
-	Auth Auth
+	Deps            shared.Deps
+	Auth            Auth
+	TourneyMaker    TourneyMaker
+	TourneyRegistry TourneyRegistry
 }
 
 func (cv *CustomValidator) Validate(i interface{}) error {
@@ -43,6 +48,24 @@ func (h *Holder) RegisterRoutes() {
 	{
 		authRoutes.POST(SignUpAPI, h.Auth.SignUp)
 		authRoutes.POST(SignInAPI, h.Auth.SignIn)
+	}
+
+	tourneyMakerRoutes := app.Group(PrefixTourneyMakerAPI)
+	tourneyMakerRoutes.Use(customMiddleware.AuthMiddleware)
+	{
+		tourneyMakerRoutes.POST("", h.TourneyMaker.Create)
+		tourneyMakerRoutes.GET("", h.TourneyMaker.Get)
+		tourneyMakerRoutes.PUT("", h.TourneyMaker.Update)
+		tourneyMakerRoutes.DELETE("", h.TourneyMaker.Delete)
+	}
+
+	tourneyRegistryRoutes := app.Group(PrefixTourneyRegistryAPI)
+	tourneyRegistryRoutes.Use(customMiddleware.AuthMiddleware)
+	{
+		tourneyRegistryRoutes.POST("", h.TourneyRegistry.Create)
+		tourneyRegistryRoutes.GET("", h.TourneyRegistry.Get)
+		tourneyRegistryRoutes.PUT("", h.TourneyRegistry.Update)
+		tourneyRegistryRoutes.DELETE("", h.TourneyRegistry.Delete)
 	}
 }
 

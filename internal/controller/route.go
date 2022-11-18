@@ -5,9 +5,16 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/pejuang-awan/BE-Authentication/internal/shared"
 	"go.uber.org/dig"
+	"unicode"
+	"unicode/utf8"
 )
 
-const PrefixAPI = "/api/auth"
+const (
+	PrefixAuthAPI = "/api/auth"
+
+	SignUpAPI = "/sign-up"
+	SignInAPI = "/sign-in"
+)
 
 type CustomValidator struct {
 	validator *validator.Validate
@@ -26,9 +33,51 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 func (h *Holder) RegisterRoutes() {
 	var app = h.Deps.Server
 
-	app.Validator = &CustomValidator{validator: validator.New()}
+	newValidator := initValidator()
+	app.Validator = &CustomValidator{validator: newValidator}
+
 	app.Use(middleware.Recover())
 	app.Use(middleware.CORS())
 
-	app.POST(PrefixAPI, h.Auth.Post)
+	authRoutes := app.Group(PrefixAuthAPI)
+	{
+		authRoutes.POST(SignUpAPI, h.Auth.SignUp)
+		authRoutes.POST(SignInAPI, h.Auth.SignIn)
+	}
+}
+
+func initValidator() *validator.Validate {
+	v := validator.New()
+
+	_ = v.RegisterValidation("password", func(fl validator.FieldLevel) bool {
+		var (
+			hasNumber         = false
+			hasLetter         = false
+			hasSpecialChar    = false
+			hasSuitableLength = false
+		)
+
+		password := fl.Field().String()
+
+		if utf8.RuneCountInString(password) >= 8 && utf8.RuneCountInString(password) <= 30 {
+			hasSuitableLength = true
+		}
+
+		for _, char := range password {
+			switch {
+			case unicode.IsNumber(char):
+				hasNumber = true
+			case unicode.IsLetter(char):
+				hasLetter = true
+			case unicode.IsPunct(char) || unicode.IsSymbol(char):
+				hasSpecialChar = true
+			default:
+				return false
+			}
+		}
+
+		return hasNumber && hasLetter && hasSpecialChar && hasSuitableLength
+	})
+
+	return v
 }

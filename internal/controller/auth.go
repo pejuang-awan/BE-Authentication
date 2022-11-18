@@ -13,27 +13,72 @@ type Auth struct {
 	Service service.Holder
 }
 
-func (impl *Auth) Post(c echo.Context) error {
-	var req = dto.TestRequest{}
+func (impl *Auth) SignUp(c echo.Context) error {
+	var (
+		ctx = c.Request().Context()
+		req = dto.SignUpRequest{}
+	)
 
 	if err := bind(c, &req); err != nil {
 		return c.JSON(http.StatusBadRequest, dto.Response{
-			Status:  dto.StatusError,
 			Message: err.Error(),
+			Status:  dto.StatusError,
 		})
 	}
 
-	res, err := impl.Service.Auth.CreateUser(c.Request().Context(), &req)
+	res, statusCode, err := impl.Service.Auth.SignUp(ctx, &req)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, dto.Response{
-			Status:  dto.StatusError,
+		return c.JSON(statusCode, dto.Response{
 			Message: err.Error(),
+			Status:  dto.StatusError,
 		})
 	}
 
-	return c.JSON(http.StatusCreated, dto.Response{
-		Status:  dto.StatusSuccess,
+	if err := c.Validate(res); err != nil {
+		return c.JSON(http.StatusInternalServerError, dto.Response{
+			Message: err.Error(),
+			Status:  dto.StatusError,
+		})
+	}
+
+	return c.JSON(http.StatusOK, dto.Response{
 		Message: dto.CreateUserSuccess,
+		Status:  dto.StatusSuccess,
+		Data:    res,
+	})
+}
+
+func (impl *Auth) SignIn(c echo.Context) error {
+	var (
+		ctx = c.Request().Context()
+		req = dto.SignInRequest{}
+	)
+
+	if err := bind(c, &req); err != nil {
+		return c.JSON(http.StatusBadRequest, dto.Response{
+			Message: err.Error(),
+			Status:  dto.StatusError,
+		})
+	}
+
+	res, statusCode, err := impl.Service.Auth.SignIn(ctx, &req)
+	if err != nil {
+		return c.JSON(statusCode, dto.Response{
+			Message: err.Error(),
+			Status:  dto.StatusError,
+		})
+	}
+
+	if err := c.Validate(res); err != nil {
+		return c.JSON(http.StatusInternalServerError, dto.Response{
+			Message: err.Error(),
+			Status:  dto.StatusError,
+		})
+	}
+
+	return c.JSON(http.StatusOK, dto.Response{
+		Message: dto.LoginSuccess,
+		Status:  dto.StatusSuccess,
 		Data:    res,
 	})
 }

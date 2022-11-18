@@ -15,6 +15,7 @@ var (
 	ErrCreateUserFailed         = errors.New("failed to create user")
 	ErrUserNotFound             = errors.New("user not found")
 	ErrWrongPassword            = errors.New("wrong password")
+	ErrGenerateTokenFailed      = errors.New("failed to generate token")
 )
 
 type (

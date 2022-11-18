@@ -63,12 +63,18 @@ func (a *authService) SignUp(ctx context.Context, req *dto.SignUpRequest) (*dto.
 		return nil, http.StatusInternalServerError, dto.ErrCreateUserFailed
 	}
 
+	token, err := a.generateToken(userCreated.Username, userCreated.Role)
+	if err != nil {
+		a.deps.Logger.Errorf("Error while generating token: %v", err)
+		return nil, http.StatusInternalServerError, dto.ErrGenerateTokenFailed
+	}
+
 	return &dto.AuthResponse{
 		ID:       userCreated.ID,
 		Username: userCreated.Username,
 		Email:    userCreated.Email,
 		Role:     userCreated.Role,
-		Token:    "token",
+		Token:    token,
 	}, http.StatusOK, nil
 }
 
@@ -91,12 +97,18 @@ func (a *authService) SignIn(ctx context.Context, req *dto.SignInRequest) (*dto.
 		return nil, http.StatusUnauthorized, dto.ErrWrongPassword
 	}
 
+	token, err := a.generateToken(user.Username, user.Role)
+	if err != nil {
+		a.deps.Logger.Errorf("Error while generating token: %v", err)
+		return nil, http.StatusInternalServerError, dto.ErrGenerateTokenFailed
+	}
+
 	return &dto.AuthResponse{
 		ID:       user.ID,
 		Username: user.Username,
 		Email:    user.Email,
 		Role:     user.Role,
-		Token:    "token",
+		Token:    token,
 	}, http.StatusOK, nil
 }
 

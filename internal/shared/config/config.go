@@ -16,9 +16,14 @@ type DatabaseConfig struct {
 	Timezone string `mapstructure:"TIMEZONE"`
 }
 
+type ServicesConfig struct {
+	TourneyMakerURL    string `mapstructure:"TOURNEY_MAKER_URL"`
+	TourneyRegistryURL string `mapstructure:"TOURNEY_REGISTRY_URL"`
+}
 type Config struct {
 	Server   ServerConfig   `mapstructure:"SERVER"`
 	Database DatabaseConfig `mapstructure:"DATABASE"`
+	Services ServicesConfig `mapstructure:"SERVICES"`
 }
 
 func NewConfig() (*Config, error) {

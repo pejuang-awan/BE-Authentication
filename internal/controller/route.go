@@ -18,12 +18,16 @@ const (
 	SignUpAPI = "/sign-up"
 	SignInAPI = "/sign-in"
 
-	CreateTournamentAPI    = "/tournament"
-	GetTournamentByIDAPI   = "/tournament/:id"
-	GetTournamentsAPI      = "/tournaments"
-	GetTournamentsByGameID = "/tournaments/:gameID"
-	GetGameByIDAPI         = "/game/:id"
-	GetGamesAPI            = "/games"
+	CreateTournamentAPI       = "/tournament"
+	GetTournamentByIDAPI      = "/tournament/:id"
+	GetTournamentsAPI         = "/tournaments"
+	GetTournamentsByGameIDAPI = "/tournaments/:gameID"
+	GetGameByIDAPI            = "/game/:id"
+	GetGamesAPI               = "/games"
+
+	JoinTournamentAPI             = "/join"
+	GetParticipantsByTourneyIDAPI = "/participants/:tourneyID"
+	GetTournamentsByCaptainIDAPI  = "/tournaments"
 )
 
 type CustomValidator struct {
@@ -63,7 +67,7 @@ func (h *Holder) RegisterRoutes() {
 		tourneyManagerRoutes.POST(CreateTournamentAPI, h.TourneyManager.CreateTourney)
 		tourneyManagerRoutes.GET(GetTournamentByIDAPI, h.TourneyManager.GetTourneyById)
 		tourneyManagerRoutes.GET(GetTournamentsAPI, h.TourneyManager.GetAllTourney)
-		tourneyManagerRoutes.GET(GetTournamentsByGameID, h.TourneyManager.GetAllTourneyByGameID)
+		tourneyManagerRoutes.GET(GetTournamentsByGameIDAPI, h.TourneyManager.GetAllTourneyByGameID)
 		tourneyManagerRoutes.GET(GetGameByIDAPI, h.TourneyManager.GetGameById)
 		tourneyManagerRoutes.GET(GetGamesAPI, h.TourneyManager.GetAllGames)
 	}
@@ -71,10 +75,9 @@ func (h *Holder) RegisterRoutes() {
 	tourneyRegistryRoutes := app.Group(PrefixTourneyRegistryAPI)
 	tourneyRegistryRoutes.Use(customMiddleware.AuthMiddleware)
 	{
-		tourneyRegistryRoutes.POST("", h.TourneyRegistry.Create)
-		tourneyRegistryRoutes.GET("", h.TourneyRegistry.Get)
-		tourneyRegistryRoutes.PUT("", h.TourneyRegistry.Update)
-		tourneyRegistryRoutes.DELETE("", h.TourneyRegistry.Delete)
+		tourneyRegistryRoutes.POST(JoinTournamentAPI, h.TourneyRegistry.JoinTourney)
+		tourneyRegistryRoutes.GET(GetParticipantsByTourneyIDAPI, h.TourneyRegistry.GetAllParticipantsByTourneyID)
+		tourneyRegistryRoutes.GET(GetTournamentsByCaptainIDAPI, h.TourneyRegistry.GetAllTourneysByCaptainID)
 	}
 }
 

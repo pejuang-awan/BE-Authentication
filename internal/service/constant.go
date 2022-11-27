@@ -5,4 +5,8 @@ const (
 	tourneysURL = "/api/tournaments"
 	gameURL     = "/api/game"
 	gamesURL    = "/api/games"
+
+	joinTourneyURL     = "/join"
+	getParticipantsURL = "/participants"
+	getTourneysURL     = "/tournaments"
 )

@@ -2,29 +2,22 @@ package dto
 
 import "errors"
 
-const (
-	CreateUserSuccess = "User created successfully"
-	LoginSuccess      = "Login success"
-	Unauthorized      = "Unauthorized"
-)
-
 var (
 	ErrFindUserByUsernameFailed = errors.New("failed to find user by username")
-	ErrFindUserByEmailFailed    = errors.New("failed to find user by email")
 	ErrUsernameAlreadyExists    = errors.New("username already exists")
-	ErrEmailAlreadyExists       = errors.New("email already exists")
 	ErrCreateUserFailed         = errors.New("failed to create user")
 	ErrUserNotFound             = errors.New("user not found")
 	ErrWrongPassword            = errors.New("wrong password")
 	ErrGenerateTokenFailed      = errors.New("failed to generate token")
+	ErrUnauthorized             = errors.New("unauthorized")
 )
 
 type (
 	SignUpRequest struct {
 		Username string `json:"username" validate:"required"`
-		Email    string `json:"email" validate:"required,email"`
 		Password string `json:"password" validate:"required,password"`
-		Role     string `json:"role" validate:"required"`
+		Role     uint8  `json:"role" validate:"required"`
+		GameType uint8  `json:"gameType" validate:"required"`
 	}
 
 	SignInRequest struct {
@@ -35,8 +28,8 @@ type (
 	AuthResponse struct {
 		ID       uint   `json:"id" validate:"required"`
 		Username string `json:"username" validate:"required"`
-		Email    string `json:"email" validate:"required,email"`
-		Role     string `json:"role" validate:"required"`
+		Role     uint8  `json:"role" validate:"required"`
+		GameType uint8  `json:"gameType" validate:"required"`
 		Token    string `json:"token" validate:"required"`
 	}
 )

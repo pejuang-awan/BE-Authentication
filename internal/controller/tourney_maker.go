@@ -26,23 +26,19 @@ func (impl *TourneyMaker) Create(c echo.Context) error {
 	bytes, statusCode, err := impl.Service.TourneyMaker.Create(c.Request())
 	if err != nil {
 		return c.JSON(statusCode, dto.Response{
-			Message: err.Error(),
-			Status:  dto.StatusError,
+			Error: err.Error(),
 		})
 	}
 
 	err = json.Unmarshal(bytes, &response)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, dto.Response{
-			Message: err.Error(),
-			Status:  dto.StatusError,
+			Error: err.Error(),
 		})
 	}
 
 	return c.JSON(http.StatusOK, dto.Response{
-		Message: dto.CreateTourneySuccess,
-		Status:  dto.StatusSuccess,
-		Data:    response,
+		Data: response,
 	})
 }
 

@@ -7,13 +7,13 @@ import (
 
 type Claims struct {
 	Username string
-	Role     string
+	Role     uint8
 	jwt.StandardClaims
 }
 
 var JWTKey = []byte("the_secret_key")
 
-func (a *authService) generateToken(username string, role string) (string, error) {
+func (a *authService) generateToken(username string, role uint8) (string, error) {
 	expiredTime := time.Now().Add(time.Hour * 24).Unix()
 
 	claims := &Claims{

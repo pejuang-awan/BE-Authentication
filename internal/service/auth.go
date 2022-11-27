@@ -37,25 +37,14 @@ func (a *authService) SignUp(ctx context.Context, req *dto.SignUpRequest) (*dto.
 		return nil, http.StatusConflict, dto.ErrUsernameAlreadyExists
 	}
 
-	oldEmail, err := a.repo.FindUserByEmail(orm, req.Email)
-	if err != nil && err != gorm.ErrRecordNotFound {
-		a.deps.Logger.Errorf("Error while finding user by email: %v", err)
-		return nil, http.StatusInternalServerError, dto.ErrFindUserByEmailFailed
-	}
-
-	if oldEmail != nil {
-		a.deps.Logger.Error("Email already exists")
-		return nil, http.StatusConflict, dto.ErrEmailAlreadyExists
-	}
-
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	hashedPasswordString := string(hashedPassword)
 
 	userCreated, err := a.repo.CreateUser(orm, &entity.User{
 		Username: req.Username,
-		Email:    req.Email,
 		Password: hashedPasswordString,
 		Role:     req.Role,
+		GameType: req.GameType,
 	})
 
 	if err != nil {
@@ -72,8 +61,8 @@ func (a *authService) SignUp(ctx context.Context, req *dto.SignUpRequest) (*dto.
 	return &dto.AuthResponse{
 		ID:       userCreated.ID,
 		Username: userCreated.Username,
-		Email:    userCreated.Email,
 		Role:     userCreated.Role,
+		GameType: userCreated.GameType,
 		Token:    token,
 	}, http.StatusOK, nil
 }
@@ -106,8 +95,8 @@ func (a *authService) SignIn(ctx context.Context, req *dto.SignInRequest) (*dto.
 	return &dto.AuthResponse{
 		ID:       user.ID,
 		Username: user.Username,
-		Email:    user.Email,
 		Role:     user.Role,
+		GameType: user.GameType,
 		Token:    token,
 	}, http.StatusOK, nil
 }

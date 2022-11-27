@@ -21,30 +21,25 @@ func (impl *Auth) SignUp(c echo.Context) error {
 
 	if err := bind(c, &req); err != nil {
 		return c.JSON(http.StatusBadRequest, dto.Response{
-			Message: err.Error(),
-			Status:  dto.StatusError,
+			Error: err.Error(),
 		})
 	}
 
 	res, statusCode, err := impl.Service.Auth.SignUp(ctx, &req)
 	if err != nil {
 		return c.JSON(statusCode, dto.Response{
-			Message: err.Error(),
-			Status:  dto.StatusError,
+			Error: err.Error(),
 		})
 	}
 
 	if err := c.Validate(res); err != nil {
 		return c.JSON(http.StatusInternalServerError, dto.Response{
-			Message: err.Error(),
-			Status:  dto.StatusError,
+			Error: err.Error(),
 		})
 	}
 
 	return c.JSON(http.StatusOK, dto.Response{
-		Message: dto.CreateUserSuccess,
-		Status:  dto.StatusSuccess,
-		Data:    res,
+		Data: res,
 	})
 }
 
@@ -56,29 +51,24 @@ func (impl *Auth) SignIn(c echo.Context) error {
 
 	if err := bind(c, &req); err != nil {
 		return c.JSON(http.StatusBadRequest, dto.Response{
-			Message: err.Error(),
-			Status:  dto.StatusError,
+			Error: err.Error(),
 		})
 	}
 
 	res, statusCode, err := impl.Service.Auth.SignIn(ctx, &req)
 	if err != nil {
 		return c.JSON(statusCode, dto.Response{
-			Message: err.Error(),
-			Status:  dto.StatusError,
+			Error: err.Error(),
 		})
 	}
 
 	if err := c.Validate(res); err != nil {
 		return c.JSON(http.StatusInternalServerError, dto.Response{
-			Message: err.Error(),
-			Status:  dto.StatusError,
+			Error: err.Error(),
 		})
 	}
 
 	return c.JSON(http.StatusOK, dto.Response{
-		Message: dto.LoginSuccess,
-		Status:  dto.StatusSuccess,
-		Data:    res,
+		Data: res,
 	})
 }

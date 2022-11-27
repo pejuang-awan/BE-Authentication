@@ -5,7 +5,7 @@ import "go.uber.org/dig"
 type Holder struct {
 	dig.In
 	Auth            Auth
-	TourneyMaker    TourneyMaker
+	TourneyManager  TourneyManager
 	TourneyRegistry TourneyRegistry
 }
 
@@ -14,7 +14,7 @@ func Register(container *dig.Container) error {
 		return err
 	}
 
-	if err := container.Provide(NewTourneyMaker); err != nil {
+	if err := container.Provide(NewTourneyManager); err != nil {
 		return err
 	}
 

@@ -9,12 +9,12 @@ import (
 	"net/http"
 )
 
-type TourneyMaker struct {
+type TourneyManager struct {
 	dig.In
 	Service service.Holder
 }
 
-func (impl *TourneyMaker) Create(c echo.Context) error {
+func (impl *TourneyManager) Create(c echo.Context) error {
 	var (
 		response interface{}
 	)
@@ -23,7 +23,7 @@ func (impl *TourneyMaker) Create(c echo.Context) error {
 	// Get request body and parse it to struct
 	// Add username or role value if needed
 
-	bytes, statusCode, err := impl.Service.TourneyMaker.Create(c.Request())
+	bytes, statusCode, err := impl.Service.TourneyManager.Create(c.Request())
 	if err != nil {
 		return c.JSON(statusCode, dto.Response{
 			Error: err.Error(),
@@ -42,14 +42,14 @@ func (impl *TourneyMaker) Create(c echo.Context) error {
 	})
 }
 
-func (impl *TourneyMaker) Get(c echo.Context) error {
+func (impl *TourneyManager) Get(c echo.Context) error {
 	return nil
 }
 
-func (impl *TourneyMaker) Update(c echo.Context) error {
+func (impl *TourneyManager) Update(c echo.Context) error {
 	return nil
 }
 
-func (impl *TourneyMaker) Delete(c echo.Context) error {
+func (impl *TourneyManager) Delete(c echo.Context) error {
 	return nil
 }

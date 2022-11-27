@@ -12,7 +12,7 @@ import (
 
 const (
 	PrefixAuthAPI            = "/api/auth"
-	PrefixTourneyMakerAPI    = "/api/tourney-maker"
+	PrefixTourneyManagerAPI  = "/api/tourney-manager"
 	PrefixTourneyRegistryAPI = "/api/tourney-registry"
 
 	SignUpAPI = "/sign-up"
@@ -27,7 +27,7 @@ type Holder struct {
 	dig.In
 	Deps            shared.Deps
 	Auth            Auth
-	TourneyMaker    TourneyMaker
+	TourneyManager  TourneyManager
 	TourneyRegistry TourneyRegistry
 }
 
@@ -50,22 +50,24 @@ func (h *Holder) RegisterRoutes() {
 		authRoutes.POST(SignInAPI, h.Auth.SignIn)
 	}
 
-	tourneyMakerRoutes := app.Group(PrefixTourneyMakerAPI)
-	tourneyMakerRoutes.Use(customMiddleware.AuthMiddleware)
+	authenticatedRoutes := app.Group("")
+	authenticatedRoutes.Use(customMiddleware.AuthMiddleware)
 	{
-		tourneyMakerRoutes.POST("", h.TourneyMaker.Create)
-		tourneyMakerRoutes.GET("", h.TourneyMaker.Get)
-		tourneyMakerRoutes.PUT("", h.TourneyMaker.Update)
-		tourneyMakerRoutes.DELETE("", h.TourneyMaker.Delete)
-	}
+		tourneyManagerRoutes := app.Group(PrefixTourneyManagerAPI)
+		{
+			tourneyManagerRoutes.POST("", h.TourneyManager.Create)
+			tourneyManagerRoutes.GET("", h.TourneyManager.Get)
+			tourneyManagerRoutes.PUT("", h.TourneyManager.Update)
+			tourneyManagerRoutes.DELETE("", h.TourneyManager.Delete)
+		}
 
-	tourneyRegistryRoutes := app.Group(PrefixTourneyRegistryAPI)
-	tourneyRegistryRoutes.Use(customMiddleware.AuthMiddleware)
-	{
-		tourneyRegistryRoutes.POST("", h.TourneyRegistry.Create)
-		tourneyRegistryRoutes.GET("", h.TourneyRegistry.Get)
-		tourneyRegistryRoutes.PUT("", h.TourneyRegistry.Update)
-		tourneyRegistryRoutes.DELETE("", h.TourneyRegistry.Delete)
+		tourneyRegistryRoutes := app.Group(PrefixTourneyRegistryAPI)
+		{
+			tourneyRegistryRoutes.POST("", h.TourneyRegistry.Create)
+			tourneyRegistryRoutes.GET("", h.TourneyRegistry.Get)
+			tourneyRegistryRoutes.PUT("", h.TourneyRegistry.Update)
+			tourneyRegistryRoutes.DELETE("", h.TourneyRegistry.Delete)
+		}
 	}
 }
 

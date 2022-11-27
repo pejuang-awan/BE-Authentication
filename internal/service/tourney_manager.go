@@ -7,19 +7,19 @@ import (
 )
 
 type (
-	TourneyMaker interface {
+	TourneyManager interface {
 		Create(req *http.Request) ([]byte, int, error)
 		Get(req *http.Request) ([]byte, int, error)
 		Update(req *http.Request) ([]byte, int, error)
 		Delete(req *http.Request) ([]byte, int, error)
 	}
 
-	tourneyMakerService struct {
+	tourneyManagerService struct {
 		deps shared.Deps
 	}
 )
 
-func (t *tourneyMakerService) Create(req *http.Request) ([]byte, int, error) {
+func (t *tourneyManagerService) Create(req *http.Request) ([]byte, int, error) {
 	//TODO implement me
 	response, err := httpCall(http.MethodPost, t.deps.Config.Services.TourneyMakerURL, req.Body)
 	if err != nil || response.StatusCode != http.StatusOK {
@@ -38,23 +38,23 @@ func (t *tourneyMakerService) Create(req *http.Request) ([]byte, int, error) {
 	return body, response.StatusCode, nil
 }
 
-func (t *tourneyMakerService) Get(req *http.Request) ([]byte, int, error) {
+func (t *tourneyManagerService) Get(req *http.Request) ([]byte, int, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (t *tourneyMakerService) Update(req *http.Request) ([]byte, int, error) {
+func (t *tourneyManagerService) Update(req *http.Request) ([]byte, int, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (t *tourneyMakerService) Delete(req *http.Request) ([]byte, int, error) {
+func (t *tourneyManagerService) Delete(req *http.Request) ([]byte, int, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func NewTourneyMaker(deps shared.Deps) (TourneyMaker, error) {
-	return &tourneyMakerService{
+func NewTourneyManager(deps shared.Deps) (TourneyManager, error) {
+	return &tourneyManagerService{
 		deps: deps,
 	}, nil
 }

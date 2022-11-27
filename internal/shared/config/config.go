@@ -17,7 +17,7 @@ type DatabaseConfig struct {
 }
 
 type ServicesConfig struct {
-	TourneyMakerURL    string `mapstructure:"TOURNEY_MAKER_URL"`
+	TourneyManagerURL  string `mapstructure:"TOURNEY_MANAGER_URL"`
 	TourneyRegistryURL string `mapstructure:"TOURNEY_REGISTRY_URL"`
 }
 type Config struct {

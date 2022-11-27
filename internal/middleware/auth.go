@@ -17,7 +17,7 @@ func AuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		token := c.Request().Header.Get("Authorization")
 		if len(token) < BearerLength {
 			return c.JSON(http.StatusUnauthorized, dto.Response{
-				Error: dto.ErrUnauthorized,
+				Error: dto.ErrUnauthorized.Error(),
 			})
 		}
 
@@ -29,13 +29,13 @@ func AuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 
 		if err != nil {
 			return c.JSON(http.StatusUnauthorized, dto.Response{
-				Error: dto.ErrUnauthorized,
+				Error: dto.ErrUnauthorized.Error(),
 			})
 		}
 
 		if !jwtToken.Valid {
 			return c.JSON(http.StatusUnauthorized, dto.Response{
-				Error: dto.ErrUnauthorized,
+				Error: dto.ErrUnauthorized.Error(),
 			})
 		}
 

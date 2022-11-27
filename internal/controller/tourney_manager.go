@@ -16,14 +16,26 @@ type TourneyManager struct {
 
 func (impl *TourneyManager) Create(c echo.Context) error {
 	var (
+		req      = dto.CreateTournamentRequest{}
 		response interface{}
 	)
 
-	// TODO: implement this
-	// Get request body and parse it to struct
-	// Add username or role value if needed
+	if err := bind(c, &req); err != nil {
+		return c.JSON(http.StatusBadRequest, dto.Response{
+			Error: err.Error(),
+		})
+	}
 
-	bytes, statusCode, err := impl.Service.TourneyManager.Create(c.Request())
+	req.Organizer = c.Get("username").(string)
+
+	reqBytes, err := json.Marshal(req)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, dto.Response{
+			Error: err.Error(),
+		})
+	}
+
+	bytes, statusCode, err := impl.Service.TourneyManager.Create(reqBytes)
 	if err != nil {
 		return c.JSON(statusCode, dto.Response{
 			Error: err.Error(),

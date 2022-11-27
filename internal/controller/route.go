@@ -17,6 +17,13 @@ const (
 
 	SignUpAPI = "/sign-up"
 	SignInAPI = "/sign-in"
+
+	CreateTournamentAPI    = "/tournament"
+	GetTournamentByIDAPI   = "/tournament/:id"
+	GetTournamentsAPI      = "/tournaments"
+	GetTournamentsByGameID = "/tournaments/:gameID"
+	GetGameByIDAPI         = "/game/:id"
+	GetGamesAPI            = "/games"
 )
 
 type CustomValidator struct {
@@ -50,24 +57,24 @@ func (h *Holder) RegisterRoutes() {
 		authRoutes.POST(SignInAPI, h.Auth.SignIn)
 	}
 
-	authenticatedRoutes := app.Group("")
-	authenticatedRoutes.Use(customMiddleware.AuthMiddleware)
+	tourneyManagerRoutes := app.Group(PrefixTourneyManagerAPI)
+	tourneyManagerRoutes.Use(customMiddleware.AuthMiddleware)
 	{
-		tourneyManagerRoutes := app.Group(PrefixTourneyManagerAPI)
-		{
-			tourneyManagerRoutes.POST("", h.TourneyManager.Create)
-			tourneyManagerRoutes.GET("", h.TourneyManager.Get)
-			tourneyManagerRoutes.PUT("", h.TourneyManager.Update)
-			tourneyManagerRoutes.DELETE("", h.TourneyManager.Delete)
-		}
+		tourneyManagerRoutes.POST(CreateTournamentAPI, h.TourneyManager.CreateTourney)
+		tourneyManagerRoutes.GET(GetTournamentByIDAPI, h.TourneyManager.GetTourneyById)
+		tourneyManagerRoutes.GET(GetTournamentsAPI, h.TourneyManager.GetAllTourney)
+		tourneyManagerRoutes.GET(GetTournamentsByGameID, h.TourneyManager.GetAllTourneyByGameID)
+		tourneyManagerRoutes.GET(GetGameByIDAPI, h.TourneyManager.GetGameById)
+		tourneyManagerRoutes.GET(GetGamesAPI, h.TourneyManager.GetAllGames)
+	}
 
-		tourneyRegistryRoutes := app.Group(PrefixTourneyRegistryAPI)
-		{
-			tourneyRegistryRoutes.POST("", h.TourneyRegistry.Create)
-			tourneyRegistryRoutes.GET("", h.TourneyRegistry.Get)
-			tourneyRegistryRoutes.PUT("", h.TourneyRegistry.Update)
-			tourneyRegistryRoutes.DELETE("", h.TourneyRegistry.Delete)
-		}
+	tourneyRegistryRoutes := app.Group(PrefixTourneyRegistryAPI)
+	tourneyRegistryRoutes.Use(customMiddleware.AuthMiddleware)
+	{
+		tourneyRegistryRoutes.POST("", h.TourneyRegistry.Create)
+		tourneyRegistryRoutes.GET("", h.TourneyRegistry.Get)
+		tourneyRegistryRoutes.PUT("", h.TourneyRegistry.Update)
+		tourneyRegistryRoutes.DELETE("", h.TourneyRegistry.Delete)
 	}
 }
 

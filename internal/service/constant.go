@@ -1,5 +1,8 @@
 package service
 
 const (
-	createTourney = "/api/tournament"
+	tourneyURL  = "/api/tournament"
+	tourneysURL = "/api/tournaments"
+	gameURL     = "/api/game"
+	gamesURL    = "/api/games"
 )

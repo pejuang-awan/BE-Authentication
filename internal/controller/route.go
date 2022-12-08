@@ -24,6 +24,7 @@ const (
 	GetTournamentsByGameIDAPI = "/tournaments/:gameID"
 	GetGameByIDAPI            = "/game/:id"
 	GetGamesAPI               = "/games"
+	GetCountAPI               = "/get-count/:id"
 
 	JoinTournamentAPI             = "/join"
 	GetParticipantsByTourneyIDAPI = "/participants/:tourneyID"
@@ -70,6 +71,7 @@ func (h *Holder) RegisterRoutes() {
 		tourneyManagerRoutes.GET(GetTournamentsByGameIDAPI, h.TourneyManager.GetAllTourneyByGameID)
 		tourneyManagerRoutes.GET(GetGameByIDAPI, h.TourneyManager.GetGameById)
 		tourneyManagerRoutes.GET(GetGamesAPI, h.TourneyManager.GetAllGames)
+		tourneyManagerRoutes.GET(GetCountAPI, h.TourneyManager.GetCount)
 	}
 
 	tourneyRegistryRoutes := app.Group(PrefixTourneyRegistryAPI)

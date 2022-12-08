@@ -165,3 +165,26 @@ func (impl *TourneyManager) GetAllGames(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, response)
 }
+
+func (impl *TourneyManager) GetCount(c echo.Context) error {
+	var (
+		response interface{}
+		gameID   = c.Param("id")
+	)
+
+	bytes, statusCode, err := impl.Service.TourneyManager.GetTourneyAndTeamCount(gameID)
+	if err != nil || statusCode != http.StatusOK {
+		return c.JSON(statusCode, dto.Response{
+			Error: err.Error(),
+		})
+	}
+
+	err = json.Unmarshal(bytes, &response)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, dto.Response{
+			Error: err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, response)
+}

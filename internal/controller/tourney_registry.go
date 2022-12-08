@@ -18,7 +18,7 @@ func (impl *TourneyRegistry) JoinTourney(c echo.Context) error {
 	var (
 		req      = dto.JoinTournamentRequest{}
 		username = c.Get("username").(string)
-		response interface{}
+		response dto.JoinTournamentResponse
 	)
 
 	if err := bind(c, &req); err != nil {
@@ -49,6 +49,18 @@ func (impl *TourneyRegistry) JoinTourney(c echo.Context) error {
 			Error: err.Error(),
 		})
 	}
+
+	go func() {
+		reqBytes, err = json.Marshal(response.Data)
+		if err != nil {
+			return
+		}
+
+		bytes, statusCode, err = impl.Service.TourneyManager.UpdateTeamCount(reqBytes)
+		if err != nil || statusCode != http.StatusOK {
+			return
+		}
+	}()
 
 	return c.JSON(http.StatusOK, response)
 }

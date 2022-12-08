@@ -86,6 +86,7 @@ func (t *tourneyRegistryService) GetTourneysByCaptainID(captainID string) ([]byt
 	url := t.deps.Config.Services.TourneyRegistryURL + getTourneysURL + "/" + captainID
 
 	t.deps.Logger.Infof("Calling tourney registry service url %s", url)
+	t.deps.Logger.Infof("our captain id is %s", captainID)
 
 	response, err := httpCall(http.MethodGet, url, nil)
 	if err != nil || response.StatusCode != http.StatusOK {

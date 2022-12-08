@@ -20,4 +20,12 @@ type (
 		CaptainID    string   `json:"captainId"`
 		Members      []string `json:"members" validate:"required"`
 	}
+
+	JoinTournamentResponse struct {
+		Data struct {
+			TeamCount    uint16 `json:"teamCount"`
+			TournamentID uint64 `json:"tournamentId"`
+		} `json:"data"`
+		Error interface{} `json:"error"`
+	}
 )

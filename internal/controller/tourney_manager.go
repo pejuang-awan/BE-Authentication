@@ -101,7 +101,7 @@ func (impl *TourneyManager) GetAllTourney(c echo.Context) error {
 func (impl *TourneyManager) GetAllTourneyByGameID(c echo.Context) error {
 	var (
 		response interface{}
-		gameID   = c.Param("gameId")
+		gameID   = c.Param("gameID")
 	)
 
 	bytes, statusCode, err := impl.Service.TourneyManager.GetTourneysByGameId(gameID)
